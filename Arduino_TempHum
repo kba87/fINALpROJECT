@@ -1,0 +1,60 @@
+#include "DHT.h"          // biblioteka sensorów DHTxx
+ 
+#define DHTPIN 2         
+
+// deklaracja typu czujnika
+//#define DHTTYPE DHT22     // DHT22
+#define DHTTYPE DHT11     // DHT11
+ String odebraneDane = ""; //Pusty ciąg odebranych danych
+DHT dht(DHTPIN, DHTTYPE);
+ 
+void setup()
+{
+  Serial.begin(9600);     // otworzenie portu szeregowego
+  dht.begin();            // inicjalizacja czujnika
+}
+ 
+void loop()
+{
+    float t = dht.readTemperature();  // odczyt temperatury
+    float h = dht.readHumidity();     // odczyt wilgotności powietrza
+ 
+  // czy odczytano wartości?
+  if (isnan(t) || isnan(h))
+  {
+    // NIE -&gt; informacja o błędzie
+    Serial.println("Blad odczytu danych z czujnika!");
+  }
+  else
+  {
+
+  delay(1000);    // opóźnienie
+
+odebraneDane = Serial.readStringUntil('\n'); 
+
+if (odebraneDane == "GET HUM") { 
+  //  Serial.print("Wilgotnosc: ");
+    Serial.print(h);
+  //  Serial.print(" % ");
+}
+
+if (odebraneDane == "GET TEMP") {
+
+// Serial.print("Temperatura: ");
+Serial.print(t);
+// Serial.println(" *C");
+}
+
+  }    }
+
+
+          /*
+    // TAK -&gt; wysyłamy wyniki przez port szeregowy
+    Serial.print("Wilgotnosc: ");
+    Serial.print(h);
+    Serial.print(" % ");
+    Serial.print("Temperatura: ");
+    Serial.print(t);
+    Serial.println(" *C");
+  }
+  */
